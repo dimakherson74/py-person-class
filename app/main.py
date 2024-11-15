@@ -7,13 +7,16 @@ class Person:
         Person.people[name.lower()] = self
 
 
-def create_person_list(people: list) -> list:
-    person_list_people = []
-    for person in people:
-        name = Person(person["name"], person["age"])
-        if person.get("wife"):
-            name.wife = person["wife"]
-        elif person.get("husband"):
-            name.husband = person["husband"]
-        person_list_people.append(name)
-    return person_list_people
+def create_person_list(people_data: list) -> list:
+    name_to_person = {person_data["name"]: Person(
+        name=person_data["name"], age=person_data["age"]
+    ) for person_data in people_data}
+
+    for person_data in people_data:
+        person = name_to_person[person_data["name"]]
+        if "wife" in person_data and person_data["wife"]:
+            person.wife = name_to_person[person_data["wife"]]
+        if "husband" in person_data and person_data["husband"]:
+            person.husband = name_to_person[person_data["husband"]]
+
+    return list(name_to_person.values())
